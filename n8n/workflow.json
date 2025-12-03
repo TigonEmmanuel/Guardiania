@@ -1,0 +1,28 @@
+{
+  "name": "Guardian-Safety-Workflow",
+  "nodes": [
+    {
+      "type": "Webhook",
+      "name": "Receive Message",
+      "parameters": {
+        "path": "/webhook/ingest"
+      }
+    },
+    {
+      "type": "Function",
+      "name": "Split Scopes",
+      "parameters": {
+        "function": "// split logic here"
+      }
+    },
+    {
+      "type": "HTTP Request",
+      "name": "Call Backend",
+      "parameters": {
+        "url": "http://your-backend:8080/api/v1/ingest",
+        "method": "POST"
+      }
+    }
+  ],
+  "connections": {}
+}

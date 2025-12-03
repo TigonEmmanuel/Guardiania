@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3307/guardian?useSSL=false&serverTimezone=UTC
+    username: ${DB_USER:root}
+    password: ${DB_PASS:emmanuel}
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MariaDB103Dialect
+
+  flyway:
+    enabled: false #  Disable Flyway completely
+
+guardian:
+  strictMode: true
+  openrouter:
+    apiKey: ${OPENROUTER_API_KEY:}
+    baseUrl: ${OPENROUTER_BASE_URL:https://api.openrouter.ai}
+    model: ${OPENROUTER_MODEL:claude-haiku-4.5}
