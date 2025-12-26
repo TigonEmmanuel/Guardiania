@@ -28,25 +28,58 @@ const Login = () => {
 
   return (
     <div className="login-page">
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">Login</button>
-      </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <div className="login-box">
+        <header className="login-header">
+          <div className="logo" aria-hidden>
+            G
+          </div>
+          <h2>Sign in</h2>
+        </header>
+
+        <form onSubmit={handleSubmit} aria-label="Login form">
+          <label htmlFor="username" className="sr-only">
+            Username
+          </label>
+          <input
+            id="username"
+            type="text"
+            name="username"
+            placeholder="Username"
+            onChange={handleChange}
+            required
+            autoComplete="username"
+            aria-required="true"
+          />
+
+          <label htmlFor="password" className="sr-only">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            placeholder="Password"
+            onChange={handleChange}
+            required
+            autoComplete="current-password"
+            aria-required="true"
+          />
+
+          <button type="submit">Login</button>
+        </form>
+
+        {error && (
+          <p className="error" role="alert">
+            {error}
+          </p>
+        )}
+
+        <div className="login-footer">
+          <a href="#" onClick={(e) => e.preventDefault()}>
+            Forgot password?
+          </a>
+        </div>
+      </div>
     </div>
   );
 };
