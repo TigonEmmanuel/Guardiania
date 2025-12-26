@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const { login } = useContext(AuthContext);
@@ -12,14 +12,13 @@ const Login = () => {
   });
   const [error, setError] = useState("");
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await API.post("/login", credentials);
+      const res = await API.post("/auth/login", credentials);
       login(res.data.user, res.data.token);
       navigate("/dashboard");
     } catch (err) {

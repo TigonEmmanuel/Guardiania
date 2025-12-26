@@ -48,10 +48,11 @@
         </dependency>
 
         <!-- Flyway Database Migration -->
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-        </dependency>
+       <dependency>
+    <groupId>org.flywaydb</groupId>
+    <artifactId>flyway-core</artifactId>
+    <version>10.0.0</version> <!-- check latest version -->
+    </dependency>
 
         <!-- SPRING WEBFLUX (for WebClient/OpenRouterClient) -->
         <dependency>
@@ -84,6 +85,23 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
+        <!-- Resilience4j for circuit-breaker support -->
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-reactor</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-core</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-circuitbreaker</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+
         <!-- JAKARTA SERVLET API (for Spring Boot 3 / JwtFilter) -->
         <dependency>
             <groupId>jakarta.servlet</groupId>
@@ -96,6 +114,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- MockWebServer for testing HTTP interactions -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>mockwebserver</artifactId>
+            <version>4.10.0</version>
             <scope>test</scope>
         </dependency>
 

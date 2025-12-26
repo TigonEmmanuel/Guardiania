@@ -18,4 +18,8 @@ public class LogService {
     public long count() {
         return repo.count();
     }
+
+    public java.util.List<LogEntry> findAll() {
+        return repo.findAll();
+    }
 }

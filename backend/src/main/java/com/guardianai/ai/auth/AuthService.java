@@ -1,8 +1,9 @@
-package com.guardianai.ai.Auth;
+package com.guardianai.ai.auth;
 
-import com.guardianai.ai.Repository.UserRepository;
 import com.guardianai.ai.model.User;
 import com.guardianai.ai.security.JwtUtil;
+import com.guardianai.ai.repository.userRepository;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -11,11 +12,11 @@ import java.util.Optional;
 @Service
 public class AuthService {
 
-    private final UserRepository userRepository;
+    private final userRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public AuthService(UserRepository userRepository,
+    public AuthService(userRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        JwtUtil jwtUtil) {
         this.userRepository = userRepository;

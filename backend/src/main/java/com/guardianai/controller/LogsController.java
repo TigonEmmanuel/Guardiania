@@ -1,7 +1,7 @@
 package com.guardianai.controller;
 
-import com.guardianai.model.AuditLog;
-import com.guardianai.service.LogService;
+import com.guardianai.db.entity.LogEntry;
+import com.guardianai.db.service.LogService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +18,8 @@ public class LogsController {
     }
 
     @GetMapping("/logs")
-    public ResponseEntity<List<AuditLog>> getLogs() {
-        return ResponseEntity.ok(logService.getAllLogs());
+    public ResponseEntity<List<LogEntry>> getLogs() {
+        return ResponseEntity.ok(logService.findAll());
     }
 
     // // Optional: Add a test log so dashboard displays something

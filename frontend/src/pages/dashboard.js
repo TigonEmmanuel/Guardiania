@@ -1,21 +1,25 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import DashboardLogs from "./dashboard";
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
-    <div className="dashboard">
-      <h2>Welcome, {user?.username || "User"}!</h2>
-      <button onClick={logout}>Logout</button>
-      <div>
+    <div className="dashboard" style={{ padding: 24 }}>
+      <h1>Welcome, {user?.username || "User"}!</h1>
+      <button onClick={handleLogout}>Logout</button>
+      <div style={{ margin: "16px 0" }}>
         <Link to="/workflow">View AI Workflow</Link>
       </div>
-      <div>
-        {/* Add student/admin specific widgets here */}
-        <p>Dashboard content placeholder</p>
-      </div>
+      <DashboardLogs />
     </div>
   );
 };

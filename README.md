@@ -51,3 +51,10 @@ Built with:
 📧 Gmail API – email ops
 📅 Google Calendar API – scheduling
 📲 Telegram Messenger – command center
+
+Environment
+Provide secrets via environment variables (do not commit keys). See `.env.example` for development placeholders. Required vars:
+
+- `OPENROUTER_API_KEY` — your OpenRouter API key
+- `OPENROUTER_BASE_URL` — optional base URL for OpenRouter
+- `OPENROUTER_MODEL` — optional model identifier

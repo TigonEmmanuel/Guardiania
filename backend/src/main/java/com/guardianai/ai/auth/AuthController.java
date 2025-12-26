@@ -1,4 +1,4 @@
-package com.guardianai.ai.Auth;
+package com.guardianai.ai.auth;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

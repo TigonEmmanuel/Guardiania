@@ -73,7 +73,7 @@ public class SafetyService {
                 "violence", violence
             ));
 
-            // Log event
+            // Log event (persist if a LogService is available)
             LogEntry entry = new LogEntry();
             entry.setOriginal(message);
             entry.setSanitized(cleaned);
@@ -85,7 +85,9 @@ public class SafetyService {
             entry.setSpamDetected(spam);
             entry.setViolenceDetected(violence);
             entry.setTimestamp(Instant.now());
-            logService.save(entry);
+            if (logService != null) {
+                logService.save(entry);
+            }
 
             return report;
     }

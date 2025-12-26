@@ -1,14 +1,21 @@
 package com.guardianai.ai.client;
 
+import com.guardianai.ai.client.OpenRouterResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.Nullable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator;
+import com.guardianai.ai.client.OpenRouterRequest;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.Objects;
+import java.util.List;
 
 @Component
 public class OpenRouterClient {
@@ -17,13 +24,12 @@ public class OpenRouterClient {
     private final String apiKey;
     private final String model;
 
-        @SuppressWarnings("null")
-        public OpenRouterClient(
+    @SuppressWarnings("null")
+    public OpenRouterClient(
             @Value("${guardian.openrouter.baseUrl:https://api.openrouter.ai}") @Nullable String baseUrl,
             @Value("${guardian.openrouter.apiKey:}") @Nullable String apiKey,
             @Value("${guardian.openrouter.model:gpt-4o-mini}") @Nullable String model
-        ) {
-        // Normalize potential null injected values to safe defaults to satisfy null-safety
+    ) {
         String safeBase = Objects.requireNonNullElse(baseUrl, "https://api.openrouter.ai");
         this.client = WebClient.builder().baseUrl(safeBase).build();
         this.apiKey = Objects.requireNonNullElse(apiKey, "");
@@ -32,31 +38,55 @@ public class OpenRouterClient {
 
     public String safeRewrite(String text) {
         if (apiKey == null || apiKey.isEmpty()) {
-            return text;  // No API key, return original text
+            return text;
         }
 
-        Map<String, Object> body = Map.of(
-            "model", this.model,
-            "input", text
-        );
+        OpenRouterRequest req = new OpenRouterRequest(this.model, text);
 
-        // ensure non-null values for API (satisfy null-safety analysis)
         var mediaType = Objects.requireNonNull(MediaType.APPLICATION_JSON);
-        Map<String, Object> safeBody = Objects.requireNonNull(body);
 
-        Mono<Map<String, Object>> resp = client.post()
+        CircuitBreaker cb = CircuitBreaker.ofDefaults("openrouter");
+
+        Mono<OpenRouterResponse> resp = client.post()
                 .uri("/v1/chat/completions")
                 .header("Authorization", "Bearer " + apiKey)
                 .contentType(mediaType)
-                .bodyValue(safeBody)
+            .bodyValue(req)
                 .retrieve()
-                .bodyToMono(new org.springframework.core.ParameterizedTypeReference<Map<String, Object>>() {});
+                .onStatus(s -> s.isError(), cr -> cr.createException().flatMap(Mono::error))
+            .bodyToMono(OpenRouterResponse.class)
+            .transform(CircuitBreakerOperator.of(cb))
+            .timeout(Duration.ofSeconds(5))
+            .retryWhen(Retry.backoff(2, Duration.ofMillis(200)));
 
-        Map<String, Object> result = resp.block();
+        OpenRouterResponse result;
+        try {
+            result = resp.block();
+        } catch (Exception e) {
+            return text;
+        }
 
         if (result == null) return text;
+        String parsed = result.extractText();
+        return parsed == null ? text : parsed;
+    }
 
-        Object out = result.get("output");
-        return (out != null) ? out.toString() : text;
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private String findAnyString(Object node) {
+        if (node == null) return null;
+        if (node instanceof String) return (String) node;
+        if (node instanceof Map) {
+            for (Object v : ((Map) node).values()) {
+                String s = findAnyString(v);
+                if (s != null && !s.isEmpty()) return s;
+            }
+        }
+        if (node instanceof List) {
+            for (Object v : (List) node) {
+                String s = findAnyString(v);
+                if (s != null && !s.isEmpty()) return s;
+            }
+        }
+        return null;
     }
 }
