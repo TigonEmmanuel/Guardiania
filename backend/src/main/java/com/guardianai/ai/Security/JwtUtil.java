@@ -50,4 +50,9 @@ public boolean isTokenExpired(String token) {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    public String generateToken(String username, String role) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'generateToken'");
+    }
 }

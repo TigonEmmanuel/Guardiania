@@ -1,13 +1,10 @@
 package com.guardianai.ai.auth;
 
 import com.guardianai.ai.model.User;
-import com.guardianai.ai.security.JwtUtil;
 import com.guardianai.ai.repository.userRepository;
-
+import com.guardianai.ai.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -24,28 +21,20 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    /**
-     * Authenticate user credentials and return JWT if valid.
-     *
-     * @param username username
-     * @param rawPassword raw password to check
-     * @return a JWT token string if credentials are valid, otherwise null
-     */
-    public String authenticateAndGenerateToken(String username, String rawPassword) {
-        Optional<User> opt = userRepository.findByUsername(username);
-        if (opt.isEmpty()) return null;
+    public User authenticate(String username, String rawPassword) {
 
-        User user = opt.get();
-        if (passwordEncoder.matches(rawPassword, user.getPassword())) {
-            return jwtUtil.generateToken(user.getUsername());
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) return null;
+
+        // ✅ THIS IS THE KEY LINE
+        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+            return null;
         }
-        return null;
+
+        return user;
     }
 
-    /**
-     * Optional helper: get user by username.
-     */
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public String generateToken(User user) {
+        return jwtUtil.generateToken(user.getUsername(), user.getRole());
     }
 }

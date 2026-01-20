@@ -11,6 +11,7 @@ const Login = () => {
     password: "",
   });
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) =>
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -27,58 +28,85 @@ const Login = () => {
   };
 
   return (
-    <div className="login-page">
-      <div className="login-box">
-        <header className="login-header">
-          <div className="logo" aria-hidden>
-            G
+    <div className="auth-container">
+      <div className="split">
+        <aside className="left-panel">
+          <div className="art-card">
+            <div className="art-badge">THE TEVX AI NETWORK</div>
+            <h1 className="art-title">ADMINS DASHBOARD</h1>
+            <h2 className="art-hero">HERE IS THE AUTOMATED NETWORK</h2>
+            <p className="art-sub">
+              10 Million+ mails been manage and control automatic.
+              <br />
+              We invite you to join the workflow.
+            </p>
+            <div className="art-signin">
+              <span>Already have an account?</span>
+              <a href="#" onClick={(e) => e.preventDefault()}>
+                Sign in
+              </a>
+            </div>
           </div>
-          <h2>Sign in</h2>
-        </header>
+          <div className="floating-circles" aria-hidden />
+        </aside>
 
-        <form onSubmit={handleSubmit} aria-label="Login form">
-          <label htmlFor="username" className="sr-only">
-            Username
-          </label>
-          <input
-            id="username"
-            type="text"
-            name="username"
-            placeholder="Username"
-            onChange={handleChange}
-            required
-            autoComplete="username"
-            aria-required="true"
-          />
+        <main className="right-panel">
+          <div className="form-card">
+            <h2>Login</h2>
 
-          <label htmlFor="password" className="sr-only">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            placeholder="Password"
-            onChange={handleChange}
-            required
-            autoComplete="current-password"
-            aria-required="true"
-          />
+            <form onSubmit={handleSubmit} aria-label="Login form">
+              <label htmlFor="username">Admins panel</label>
+              <input
+                id="username"
+                type="text"
+                name="username"
+                placeholder="admins name"
+                onChange={handleChange}
+                required
+                autoComplete="username"
+                aria-required="true"
+              />
 
-          <button type="submit">Login</button>
-        </form>
+              <label htmlFor="password">Enter password</label>
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Enter password"
+                onChange={handleChange}
+                required
+                autoComplete="current-password"
+                aria-required="true"
+              />
 
-        {error && (
-          <p className="error" role="alert">
-            {error}
-          </p>
-        )}
+              <label className="show-password">
+                <input
+                  type="checkbox"
+                  onChange={(e) => setShowPassword(e.target.checked)}
+                />{" "}
+                Show password
+              </label>
 
-        <div className="login-footer">
-          <a href="#" onClick={(e) => e.preventDefault()}>
-            Forgot password?
-          </a>
-        </div>
+              <button type="submit" className="primary-btn">
+                Sign up →
+              </button>
+
+              <div className="or-divider">
+                <span>or</span>
+              </div>
+
+              <button type="button" className="google-btn">
+                Continue with Google
+              </button>
+            </form>
+
+            {error && (
+              <p className="error" role="alert">
+                {error}
+              </p>
+            )}
+          </div>
+        </main>
       </div>
     </div>
   );
